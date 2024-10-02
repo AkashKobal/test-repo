@@ -1,21 +1,21 @@
 import express from "express";
 import bodyParser from "body-parser";
-import pg from "pg";
+import pkg from "pg";
 import dotenv from "dotenv";
 
 const app = express();
 dotenv.config();
 
+const { Pool } = pkg;
 const port = process.env.PORT;
 
-const db = new pg.Client({
-  user: process.env.USER,
-  host: process.env.HOST,
-  database: process.env.DATABASE,
-  password: process.env.PASSWORD,
-  port: 5432,
+const pool = new Pool({
+  connectionString: process.env.POSTGRES_URL,
 });
-db.connect();
+
+pool.connect()
+  .then(() => console.log("Database connected successfully"))
+  .catch(err => console.error("Error connecting to the database:", err));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -33,22 +33,19 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", async (req, res) => {
-  const name = req.body.name
+  const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
 
-
   try {
-    const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+    const checkResult = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
 
     if (checkResult.rows.length > 0) {
       res.send("Email already exists. Try logging in.");
     } else {
-      const result = await db.query(
+      const result = await pool.query(
         "INSERT INTO users (name,email, password) VALUES ($1, $2, $3)",
-        [name,email, password]
+        [name, email, password]
       );
       console.log(result);
       res.render("secrets.ejs");
@@ -63,9 +60,7 @@ app.post("/login", async (req, res) => {
   const password = req.body.password;
 
   try {
-    const result = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     if (result.rows.length > 0) {
       const user = result.rows[0];
       const storedPassword = user.password;

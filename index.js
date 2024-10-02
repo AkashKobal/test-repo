@@ -7,7 +7,7 @@ const app = express();
 dotenv.config();
 
 const { Pool } = pkg;
-const port = process.env.PORT;
+const port = process.env.POSTGRES_PORT;
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URL,

@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+
+  <form class="form" action="/login" method="POST">
+    <p class="form-title">Login in to your account</p>
+    <div class="input-container">
+      <input type="email" placeholder="Enter email" name="email">
+      <span>
+      </span>
+    </div>
+    <div class="input-container">
+      <input type="password" placeholder="Enter password" name="password">
+    </div>
+    <button type="submit" class="submit">
+      Sign in
+    </button>
+
+    <p class="signup-link">
+      No account?
+      <a href="register">Sign up</a>
+    </p>
+  </form>
+
+  <!-- <div class="col-sm-4">
+      <div class="card">
+        <div class="card-body">
+          <a class="btn btn-block" href="/auth/google" role="button">
+            <i class="fab fa-google"></i>
+            Sign In with Google
+          </a>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
+  </div>
+
+  <%- include('partials/footer') %>

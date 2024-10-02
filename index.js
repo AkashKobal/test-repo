@@ -20,6 +20,11 @@ pool.connect()
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send('Something went wrong!');
+});
+
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
